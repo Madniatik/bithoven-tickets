@@ -1,0 +1,66 @@
+{
+    "name": "bithoven/tickets",
+    "description": "Support ticket system for Bithoven framework",
+    "type": "library",
+    "version": "1.0.0",
+    "keywords": ["bithoven", "tickets", "support", "helpdesk", "customer-service"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bithoven Team",
+            "email": "dev@bithoven.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "illuminate/support": "^11.0",
+        "illuminate/database": "^11.0",
+        "illuminate/http": "^11.0",
+        "illuminate/routing": "^11.0",
+        "illuminate/validation": "^11.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0",
+        "orchestra/testbench": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bithoven\\Tickets\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bithoven\\Tickets\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bithoven\\Tickets\\TicketsServiceProvider"
+            ]
+        },
+        "bithoven": {
+            "extension": true,
+            "name": "Tickets",
+            "description": "Complete support ticket system with categories, assignments, and notifications",
+            "version": "1.0.0",
+            "author": "Bithoven Team",
+            "core_version": "^1.4.0",
+            "modules": [
+                "user-management",
+                "authentication",
+                "roles-permissions"
+            ],
+            "permissions": [
+                "view-tickets",
+                "create-tickets",
+                "edit-tickets",
+                "delete-tickets",
+                "assign-tickets",
+                "manage-ticket-categories"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
