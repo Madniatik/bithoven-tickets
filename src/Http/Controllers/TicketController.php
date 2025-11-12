@@ -323,7 +323,6 @@ class TicketController extends Controller
 
         return back()->with('success', 'Ticket reopened successfully');
     }
-}
 
     /**
      * Update ticket category
