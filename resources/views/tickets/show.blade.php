@@ -116,14 +116,17 @@
                         <div class="text-gray-700 fs-6 mb-3" style="white-space: pre-line;">{{ trim($ticket->description) }}
                         </div>
 
-                        {{-- Mostrar archivos adjuntos del ticket --}}
-                        @if ($ticket->attachments && $ticket->attachments->count() > 0)
+                        {{-- Mostrar archivos adjuntos del ticket (solo los del ticket inicial, no de comentarios) --}}
+                        @php
+                            $ticketAttachments = $ticket->attachments->whereNull('comment_id');
+                        @endphp
+                        @if ($ticketAttachments->count() > 0)
                             <div class="mt-4">
                                 <div class="text-muted fs-7 mb-3">
                                     <i class="fas fa-paperclip me-1"></i> Attached Files:
                                 </div>
                                 <div class="d-flex flex-wrap gap-3">
-                                    @foreach ($ticket->attachments as $attachment)
+                                    @foreach ($ticketAttachments as $attachment)
                                         @php
                                             $extension = strtolower(
                                                 pathinfo(
