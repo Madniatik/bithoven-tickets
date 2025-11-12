@@ -2,14 +2,12 @@
 
 namespace Bithoven\Tickets\Services;
 
+use Bithoven\Tickets\Events\TicketAssigned;
+use Bithoven\Tickets\Events\TicketCreated;
+use Bithoven\Tickets\Events\TicketResolved;
 use Bithoven\Tickets\Models\Ticket;
 use Bithoven\Tickets\Models\TicketComment;
-use Bithoven\Tickets\Models\TicketAttachment;
-use Bithoven\Tickets\Events\TicketCreated;
-use Bithoven\Tickets\Events\TicketAssigned;
-use Bithoven\Tickets\Events\TicketResolved;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class TicketService
 {
@@ -30,7 +28,7 @@ class TicketService
             ]);
 
             // Handle attachments if provided
-            if (!empty($data['attachments'])) {
+            if (! empty($data['attachments'])) {
                 $this->attachFiles($ticket, $data['attachments']);
             }
 
@@ -46,7 +44,7 @@ class TicketService
     public function updateTicket(Ticket $ticket, array $data): Ticket
     {
         $oldAssignedTo = $ticket->assigned_to;
-        
+
         $ticket->update(array_filter([
             'subject' => $data['subject'] ?? $ticket->subject,
             'description' => $data['description'] ?? $ticket->description,
@@ -75,9 +73,9 @@ class TicketService
     public function assignTicket(Ticket $ticket, int $userId): Ticket
     {
         $ticket->update(['assigned_to' => $userId]);
-        
+
         event(new TicketAssigned($ticket));
-        
+
         return $ticket->fresh();
     }
 
@@ -94,7 +92,7 @@ class TicketService
         ]);
 
         // Update first_response_at if this is the first comment
-        if (!$ticket->first_response_at) {
+        if (! $ticket->first_response_at) {
             $ticket->update(['first_response_at' => now()]);
         }
 
@@ -107,9 +105,9 @@ class TicketService
     public function attachFiles(Ticket $ticket, array $files): array
     {
         $attachments = [];
-        
+
         foreach ($files as $file) {
-            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
             $path = $file->storeAs(
                 config('tickets.uploads.path'),
                 $filename,
@@ -165,22 +163,22 @@ class TicketService
         $query = Ticket::query();
 
         // Filter by user_id (for normal users to see only their tickets)
-        if (!empty($filters['user_id'])) {
+        if (! empty($filters['user_id'])) {
             $query->where(function ($q) use ($filters) {
                 $q->where('user_id', $filters['user_id'])
-                  ->orWhere('assigned_to', $filters['user_id']);
+                    ->orWhere('assigned_to', $filters['user_id']);
             });
         }
 
-        if (!empty($filters['assigned_to'])) {
+        if (! empty($filters['assigned_to'])) {
             $query->where('assigned_to', $filters['assigned_to']);
         }
 
-        if (!empty($filters['date_from'])) {
+        if (! empty($filters['date_from'])) {
             $query->where('created_at', '>=', $filters['date_from']);
         }
 
-        if (!empty($filters['date_to'])) {
+        if (! empty($filters['date_to'])) {
             $query->where('created_at', '<=', $filters['date_to']);
         }
 
@@ -203,10 +201,10 @@ class TicketService
     /**
      * Close stale tickets
      */
-    public function closeStaleTickets(int $days = null): int
+    public function closeStaleTickets(?int $days = null): int
     {
         $days = $days ?? config('tickets.close_after_days', 30);
-        
+
         $tickets = Ticket::where('status', 'resolved')
             ->where('resolved_at', '<', now()->subDays($days))
             ->get();
@@ -223,7 +221,7 @@ class TicketService
      */
     public function addAttachmentToComment($comment, $file)
     {
-        $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
         $path = $file->storeAs(
             config('tickets.uploads.path'),
             $filename,

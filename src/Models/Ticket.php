@@ -178,9 +178,18 @@ class Ticket extends Model
     {
         return $query->where('priority', 'urgent');
     }
-
     /**
-     * Check if ticket is open
+     * Scope: Filter tickets for a specific user (created by or assigned to)
+     */
+    public function scopeForUser($query, $userId)
+    {
+        return $query->where(function ($q) use ($userId) {
+            $q->where('user_id', $userId)
+              ->orWhere('assigned_to', $userId);
+        });
+    }
+
+
      */
     public function isOpen(): bool
     {
