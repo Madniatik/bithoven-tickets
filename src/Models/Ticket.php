@@ -189,7 +189,8 @@ class Ticket extends Model
         });
     }
 
-
+    /**
+     * Check if ticket is open
      */
     public function isOpen(): bool
     {
