@@ -324,3 +324,22 @@ class TicketController extends Controller
         return back()->with('success', 'Ticket reopened successfully');
     }
 }
+
+    /**
+     * Update ticket category
+     */
+    public function updateCategory(Request $request, Ticket $ticket)
+    {
+        $this->authorize('view', $ticket);
+
+        $request->validate([
+            'category_id' => 'nullable|exists:ticket_categories,id'
+        ]);
+
+        $ticket->update([
+            'category_id' => $request->category_id
+        ]);
+
+        return redirect()->back()->with('success', 'Category updated successfully');
+    }
+}

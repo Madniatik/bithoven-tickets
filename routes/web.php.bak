@@ -11,12 +11,11 @@ Route::middleware(['web', 'extension.enabled:tickets', 'auth'])->group(function 
         Route::get('/create', [TicketController::class, 'create'])->name('create');
         Route::post('/', [TicketController::class, 'store'])->name('store');
         Route::get('/{ticket}', [TicketController::class, 'show'])->name('show');
-        // Route::get('/{ticket}/edit', [TicketController::class, 'edit'])->name('edit');
-        Route::put('/{ticket}', [TicketController::class, 'update'])->name('update');
+        // Route::get('/{ticket}/edit', [TicketController::class, 'edit'])->name('edit'); // Eliminada - no necesaria
+        Route::put('/{ticket}', [TicketController::class, 'update'])->name('update'); // Solo para cambios de status vía AJAX
         Route::delete('/{ticket}', [TicketController::class, 'destroy'])->name('destroy');
         
         // Ticket actions
-        Route::patch('/{ticket}/category', [TicketController::class, 'updateCategory'])->name('update-category');
         Route::post('/{ticket}/assign', [TicketController::class, 'assign'])->name('assign');
         Route::post('/{ticket}/comments', [TicketController::class, 'addComment'])->name('comments.store');
         Route::post('/{ticket}/close', [TicketController::class, 'close'])->name('close');

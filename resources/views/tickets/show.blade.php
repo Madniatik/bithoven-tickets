@@ -339,9 +339,9 @@
 
                         <div class="mb-4">
                             <div class="text-muted fs-7 mb-2">Category</div>
-                            <form action="{{ route('tickets.update', $ticket) }}" method="POST" id="categoryForm">
+                            <form action="{{ route('tickets.update-category', $ticket) }}" method="POST" id="categoryForm">
                                 @csrf
-                                @method('PUT')
+                                @method('PATCH')
                                 <select name="category_id" class="form-select form-select-sm" onchange="this.form.submit()">
                                     <option value="">No Category</option>
                                     @foreach($categories as $category)
