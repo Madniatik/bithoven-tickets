@@ -358,7 +358,7 @@ class TicketController extends Controller
         // Delete attachments associated with this comment
         foreach ($comment->attachments as $attachment) {
             // Delete file from storage
-            if (\Storage::exists($attachment->file_path)) {
+            if ($attachment->file_path && \Storage::exists($attachment->file_path)) {
                 \Storage::delete($attachment->file_path);
             }
             $attachment->delete();
