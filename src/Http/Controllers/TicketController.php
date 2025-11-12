@@ -149,8 +149,9 @@ class TicketController extends Controller
         ]);
 
         $agents = $this->assignmentService->getAvailableAgents();
+        $categories = TicketCategory::orderBy('name')->get();
 
-        return view('tickets::tickets.show', compact('ticket', 'agents'));
+        return view('tickets::tickets.show', compact('ticket', 'agents', 'categories'));
     }
 
     /**

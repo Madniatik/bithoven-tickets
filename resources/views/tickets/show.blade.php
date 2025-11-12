@@ -337,6 +337,24 @@
 
                         <div class="separator my-4"></div>
 
+                        <div class="mb-4">
+                            <div class="text-muted fs-7 mb-2">Category</div>
+                            <form action="{{ route('tickets.update', $ticket) }}" method="POST" id="categoryForm">
+                                @csrf
+                                @method('PUT')
+                                <select name="category_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                                    <option value="">No Category</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}" {{ $ticket->category_id == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </form>
+                        </div>
+
+                        <div class="separator my-4"></div>
+
                         <div class="row g-3">
                             <div class="col-6">
                                 <div class="text-muted fs-7 mb-1">Created</div>
