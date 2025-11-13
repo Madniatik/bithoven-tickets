@@ -3,12 +3,13 @@
 namespace Bithoven\Tickets\Mail;
 
 use Bithoven\Tickets\Models\Ticket;
-use Bithoven\Tickets\Models\TicketComment;
+use Bithoven\Tickets\Models\Comment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\App;
 
 class CommentAdded extends Mailable
 {
@@ -18,10 +19,12 @@ class CommentAdded extends Mailable
      * Create a new message instance.
      */
     public function __construct(
-        public Ticket $ticket,
-        public TicketComment $comment
+        public Comment $comment
     ) {
-        //
+        // Set locale based on user preference
+        $locale = $comment->ticket->user->locale ?? config('app.locale', 'en');
+        App::setLocale($locale);
+        $this->locale($locale);
     }
 
     /**
@@ -30,7 +33,7 @@ class CommentAdded extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "New Comment on Ticket #{$this->ticket->ticket_number}",
+            subject: __('tickets::emails.comment_added.subject', ['number' => $this->comment->ticket->ticket_number]),
         );
     }
 

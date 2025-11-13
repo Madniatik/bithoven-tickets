@@ -327,7 +327,31 @@
                                 @csrf
                                 <div class="mb-3">
                                     <label class="form-label fw-semibold">Add Comment</label>
-                                    <textarea name="comment" class="form-control" rows="4" placeholder="Type your comment..." required></textarea>
+                                    
+                                    {{-- Quick Response Hint for Staff --}}
+                                    @can('edit-tickets')
+                                    <div class="alert alert-light-info d-flex align-items-center p-3 mb-2">
+                                        {!! getIcon('information-5', 'fs-3 text-info me-3') !!}
+                                        <div class="fs-7">
+                                            <strong>Quick Tip:</strong> Type <code>/</code> to see quick response shortcuts
+                                        </div>
+                                    </div>
+                                    @endcan
+                                    
+                                    <div class="position-relative">
+                                        <textarea name="comment" 
+                                                  id="comment-textarea"
+                                                  class="form-control" 
+                                                  rows="4" 
+                                                  placeholder="Type your comment... (staff: use / for quick responses)" 
+                                                  required></textarea>
+                                        
+                                        {{-- Canned Responses Dropdown --}}
+                                        <div id="canned-responses-dropdown" 
+                                             class="position-absolute bg-white border rounded shadow-sm" 
+                                             style="display: none; z-index: 1000; max-height: 300px; overflow-y: auto; width: 100%; top: 100%; left: 0;">
+                                        </div>
+                                    </div>
                                 </div>
                                 @can('addInternalComment', $ticket)
                                     <div class="form-check mb-3">
@@ -440,6 +464,38 @@
                                 @else
                                     <span class="text-muted">No Category</span>
                                 @endif
+                            @endcan
+                        </div>
+
+                        <div class="separator my-4"></div>
+
+                        <div class="mb-4">
+                            <div class="text-muted fs-7 mb-2">Priority</div>
+                            @can('manage-ticket-categories')
+                                <form action="{{ route('tickets.update-priority', $ticket) }}" method="POST"
+                                    id="priorityForm">
+                                    @csrf
+                                    @method('PATCH')
+                                    <select name="priority" class="form-select form-select-sm"
+                                        onchange="this.form.submit()">
+                                        <option value="low" {{ $ticket->priority === 'low' ? 'selected' : '' }}>
+                                            Low
+                                        </option>
+                                        <option value="medium" {{ $ticket->priority === 'medium' ? 'selected' : '' }}>
+                                            Medium
+                                        </option>
+                                        <option value="high" {{ $ticket->priority === 'high' ? 'selected' : '' }}>
+                                            High
+                                        </option>
+                                        <option value="urgent" {{ $ticket->priority === 'urgent' ? 'selected' : '' }}>
+                                            Urgent
+                                        </option>
+                                    </select>
+                                </form>
+                            @else
+                                <span class="badge badge-{{ $ticket->priority_color }} fs-7">
+                                    {{ $ticket->priority_label }}
+                                </span>
                             @endcan
                         </div>
 
@@ -712,6 +768,161 @@
                     }
                 });
             }
+            
+            // ========= CANNED RESPONSES AUTOCOMPLETE =========
+            @can('edit-tickets')
+            (function() {
+                const textarea = document.getElementById('comment-textarea');
+                const dropdown = document.getElementById('canned-responses-dropdown');
+                let responses = [];
+                let selectedIndex = -1;
+                
+                if (!textarea || !dropdown) return;
+                
+                // Detect "/" keystroke
+                textarea.addEventListener('keyup', function(e) {
+                    const cursorPos = this.selectionStart;
+                    const textBeforeCursor = this.value.substring(0, cursorPos);
+                    const lastWord = textBeforeCursor.split(/\s/).pop();
+                    
+                    // Check if last word starts with /
+                    if (lastWord.startsWith('/') && lastWord.length > 1) {
+                        const shortcut = lastWord;
+                        searchResponses(shortcut);
+                    } else {
+                        hideDropdown();
+                    }
+                    
+                    // Arrow navigation
+                    if (dropdown.style.display === 'block') {
+                        if (e.key === 'ArrowDown') {
+                            e.preventDefault();
+                            selectedIndex = Math.min(selectedIndex + 1, responses.length - 1);
+                            highlightItem(selectedIndex);
+                        } else if (e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            selectedIndex = Math.max(selectedIndex - 1, 0);
+                            highlightItem(selectedIndex);
+                        } else if (e.key === 'Enter' && selectedIndex >= 0) {
+                            e.preventDefault();
+                            insertResponse(responses[selectedIndex]);
+                        } else if (e.key === 'Escape') {
+                            hideDropdown();
+                        }
+                    }
+                });
+                
+                function searchResponses(shortcut) {
+                    // Use public endpoint accessible to agents with edit-tickets permission
+                    fetch(`{{ url('canned-responses/search') }}?shortcut=${encodeURIComponent(shortcut)}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            responses = data;
+                            if (data.length > 0) {
+                                showDropdown(data);
+                            } else {
+                                hideDropdown();
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Error fetching responses:', err);
+                            hideDropdown();
+                        });
+                }
+                
+                function showDropdown(items) {
+                    dropdown.innerHTML = '';
+                    selectedIndex = -1;
+                    
+                    items.forEach((item, index) => {
+                        const div = document.createElement('div');
+                        div.className = 'p-3 border-bottom cursor-pointer hover-bg-light';
+                        div.style.cursor = 'pointer';
+                        div.dataset.index = index;
+                        div.innerHTML = `
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <code class="text-primary fw-bold">${item.shortcut}</code>
+                                    <span class="text-muted ms-2">${item.title}</span>
+                                </div>
+                                <span class="badge badge-light-${item.is_public ? 'success' : 'warning'} fs-8">
+                                    ${item.is_public ? 'Public' : 'Internal'}
+                                </span>
+                            </div>
+                            <div class="text-gray-600 fs-7 mt-1" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                ${item.content.substring(0, 80)}${item.content.length > 80 ? '...' : ''}
+                            </div>
+                        `;
+                        
+                        div.addEventListener('click', () => insertResponse(item));
+                        div.addEventListener('mouseenter', () => {
+                            selectedIndex = index;
+                            highlightItem(index);
+                        });
+                        
+                        dropdown.appendChild(div);
+                    });
+                    
+                    dropdown.style.display = 'block';
+                }
+                
+                function hideDropdown() {
+                    dropdown.style.display = 'none';
+                    dropdown.innerHTML = '';
+                    responses = [];
+                    selectedIndex = -1;
+                }
+                
+                function highlightItem(index) {
+                    const items = dropdown.querySelectorAll('[data-index]');
+                    items.forEach((item, i) => {
+                        if (i === index) {
+                            item.classList.add('bg-light-primary');
+                        } else {
+                            item.classList.remove('bg-light-primary');
+                        }
+                    });
+                }
+                
+                function insertResponse(response) {
+                    const cursorPos = textarea.selectionStart;
+                    const textBefore = textarea.value.substring(0, cursorPos);
+                    const textAfter = textarea.value.substring(cursorPos);
+                    
+                    // Remove the shortcut
+                    const lastSlashIndex = textBefore.lastIndexOf('/');
+                    const newTextBefore = textBefore.substring(0, lastSlashIndex);
+                    
+                    // Insert response content
+                    textarea.value = newTextBefore + response.content + textAfter;
+                    
+                    // Set cursor position after inserted text
+                    const newCursorPos = newTextBefore.length + response.content.length;
+                    textarea.setSelectionRange(newCursorPos, newCursorPos);
+                    textarea.focus();
+                    
+                    hideDropdown();
+                    
+                    // Show success toast
+                    const toast = document.createElement('div');
+                    toast.className = 'position-fixed bottom-0 end-0 m-5 alert alert-success alert-dismissible fade show';
+                    toast.style.zIndex = '9999';
+                    toast.innerHTML = `
+                        <strong>Response inserted!</strong> "${response.title}"
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    document.body.appendChild(toast);
+                    setTimeout(() => toast.remove(), 3000);
+                }
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!textarea.contains(e.target) && !dropdown.contains(e.target)) {
+                        hideDropdown();
+                    }
+                });
+            })();
+            @endcan
         </script>
     @endpush
 </x-default-layout>

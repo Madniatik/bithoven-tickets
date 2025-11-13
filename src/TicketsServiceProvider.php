@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Event;
 use Bithoven\Tickets\Console\Commands\CloseStaleTickets;
+use Bithoven\Tickets\Console\Commands\ProcessAutomationRules;
 use Bithoven\Tickets\Models\Ticket;
 use Bithoven\Tickets\Policies\TicketPolicy;
 
@@ -87,6 +88,7 @@ class TicketsServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 CloseStaleTickets::class,
+                ProcessAutomationRules::class,
             ]);
         }
 

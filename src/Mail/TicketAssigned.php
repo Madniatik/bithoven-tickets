@@ -20,9 +20,12 @@ class TicketAssigned extends Mailable
     public function __construct(
         public Ticket $ticket,
         public User $assignedTo,
-        public ?User $assignedBy = null
+        public User $assignedBy
     ) {
-        //
+        // Set locale based on recipient preference
+        $locale = $assignedTo->locale ?? config('app.locale', 'en');
+        App::setLocale($locale);
+        $this->locale($locale);
     }
 
     /**
@@ -31,7 +34,7 @@ class TicketAssigned extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "Ticket Assigned to You: #{$this->ticket->ticket_number}",
+            subject: __('tickets::emails.ticket_assigned.subject', ['number' => $this->ticket->ticket_number]),
         );
     }
 

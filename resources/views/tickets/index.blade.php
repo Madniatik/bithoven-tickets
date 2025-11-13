@@ -19,6 +19,43 @@
                 border-radius: 0.375rem;
                 font-size: 0.85rem;
             }
+
+            /* DataTables Metronic Styling */
+            .dataTables_wrapper .dataTables_paginate {
+                margin-top: 1rem;
+            }
+
+            .dataTables_wrapper .dataTables_paginate .paginate_button {
+                padding: 0.5rem 0.75rem;
+                margin: 0 0.125rem;
+                border: 1px solid #e4e6ef;
+                color: #7e8299;
+                background: #fff;
+                border-radius: 0.475rem;
+                font-weight: 600;
+                font-size: 0.925rem;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+            .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+                background: #f5f8fa;
+                border-color: #009ef7;
+                color: #009ef7;
+            }
+
+            .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+                background: #009ef7;
+                border-color: #009ef7;
+                color: #fff;
+            }
+
+            .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+                background: #f5f8fa;
+                border-color: #e4e6ef;
+                color: #b5b5c3;
+                cursor: not-allowed;
+            }
         </style>
     @endpush
     <div class="container-fluid">
@@ -204,133 +241,15 @@
 
         {{-- Tickets Table --}}
         <div class="card shadow-sm">
-            <div class="card-body">
-                @if ($tickets->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table table-row-bordered table-hover align-middle gs-7">
-                            <thead>
-                                <tr class="fw-bold fs-6 text-gray-800 border-bottom-2 border-gray-200">
-                                    <th>Ticket #</th>
-                                    <th>Subject</th>
-                                    <th>Status</th>
-                                    <th>Priority</th>
-                                    <th>Category</th>
-                                    <th>Created By</th>
-                                    <th>Assigned To</th>
-                                    <th>Created</th>
-                                    <th class="text-end">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($tickets as $ticket)
-                                    <tr>
-                                        <td>
-                                            <a href="{{ route('tickets.show', $ticket) }}"
-                                                class="text-gray-800 text-hover-primary fw-bold">
-                                                {{ $ticket->ticket_number }}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('tickets.show', $ticket) }}"
-                                                class="text-gray-800 text-hover-primary">
-                                                {{ Str::limit($ticket->subject, 50) }}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <span
-                                                class="badge badge-light-{{ $ticket->status_color }} ticket-status-badge">
-                                                {{ $ticket->status_label }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span
-                                                class="badge badge-{{ $ticket->priority_color }} ticket-priority-badge">
-                                                {{ $ticket->priority_label }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            @if ($ticket->category)
-                                                <span class="badge"
-                                                    style="background-color: {{ $ticket->category->color }}; color: white;">
-                                                    <i class="fas {{ $ticket->category->icon }} me-1"></i>
-                                                    {{ $ticket->category->name }}
-                                                </span>
-                                            @else
-                                                <span class="text-muted">—</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="symbol symbol-35px symbol-circle me-3">
-                                                    @if ($ticket->user->avatar)
-                                                        <img src="{{ asset('storage/' . $ticket->user->avatar) }}"
-                                                            alt="{{ $ticket->user->name }}">
-                                                    @else
-                                                        <span
-                                                            class="symbol-label bg-light-primary text-primary fw-semibold">
-                                                            {{ substr($ticket->user->name, 0, 1) }}
-                                                        </span>
-                                                    @endif
-                                                </div>
-                                                <span class="text-gray-800">{{ $ticket->user->name }}</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            @if ($ticket->assignedUser)
-                                                <div class="d-flex align-items-center">
-                                                    <div class="symbol symbol-35px symbol-circle me-3">
-                                                        @if ($ticket->assignedUser->avatar)
-                                                            <img src="{{ asset('storage/' . $ticket->assignedUser->avatar) }}"
-                                                                alt="{{ $ticket->assignedUser->name }}">
-                                                        @else
-                                                            <span
-                                                                class="symbol-label bg-light-success text-success fw-semibold">
-                                                                {{ substr($ticket->assignedUser->name, 0, 1) }}
-                                                            </span>
-                                                        @endif
-                                                    </div>
-                                                    <span
-                                                        class="text-gray-800">{{ $ticket->assignedUser->name }}</span>
-                                                </div>
-                                            @else
-                                                <span class="badge badge-light-warning">Unassigned</span>
-                                            @endif
-                                        </td>
-                                        <td>{{ $ticket->created_at->diffForHumans() }}</td>
-                                        <td class="text-end">
-                                            <a href="{{ route('tickets.show', $ticket) }}"
-                                                class="btn btn-sm btn-light btn-active-light-primary">
-                                                <i class="fas fa-eye"></i> View
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-
-                    {{-- Pagination --}}
-                    <div class="d-flex justify-content-between align-items-center mt-5">
-                        <div class="text-muted">
-                            Showing {{ $tickets->firstItem() }} to {{ $tickets->lastItem() }} of
-                            {{ $tickets->total() }} tickets
-                        </div>
-                        <div>
-                            {{ $tickets->links() }}
-                        </div>
-                    </div>
-                @else
-                    <div class="text-center py-10">
-                        <i class="fas fa-inbox fs-3x text-muted mb-5"></i>
-                        <p class="text-muted fs-4">No tickets found</p>
-                        @can('create-tickets')
-                            <a href="{{ route('tickets.create') }}" class="btn btn-primary mt-3">
-                                <i class="fas fa-plus"></i> Create Your First Ticket
-                            </a>
-                        @endcan
-                    </div>
-                @endif
+            <div class="card-body py-4">
+                <div class="table-responsive">
+                    {!! $dataTable->table(['class' => 'table align-middle table-row-dashed fs-6 gy-5', 'id' => 'tickets-table']) !!}
+                </div>
             </div>
         </div>
     </div>
+
+    @push('scripts')
+        {!! $dataTable->scripts() !!}
+    @endpush
 </x-default-layout>

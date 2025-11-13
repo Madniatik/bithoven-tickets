@@ -27,6 +27,22 @@
                     <form action="{{ route('tickets.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
+                        {{-- Template Selector --}}
+                        @can('create-tickets')
+                        <div class="alert alert-info d-flex align-items-center mb-5">
+                            <div class="flex-grow-1">
+                                {!! getIcon('information-5', 'fs-2x text-info me-4') !!}
+                                <span class="fw-semibold">Quick Start:</span> Load a template to fill in common fields automatically
+                            </div>
+                            <select id="template-selector" class="form-select w-auto">
+                                <option value="">Select a template...</option>
+                                @foreach(\Bithoven\Tickets\Models\TicketTemplate::active()->get() as $template)
+                                <option value="{{ $template->id }}">{{ $template->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endcan
+
                         {{-- Subject --}}
                         <div class="mb-5">
                             <label class="form-label required">Subject</label>
@@ -135,4 +151,64 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const templateSelector = document.getElementById('template-selector');
+    
+    if (templateSelector) {
+        templateSelector.addEventListener('change', function() {
+            const templateId = this.value;
+            
+            if (!templateId) return;
+            
+            // Show loading state
+            this.disabled = true;
+            const originalText = this.options[this.selectedIndex].text;
+            this.options[this.selectedIndex].text = 'Loading...';
+            
+            // Fetch template data (using public endpoint accessible to all ticket creators)
+            fetch(`{{ url('ticket-templates') }}/${templateId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Fill form fields
+                    document.querySelector('input[name="subject"]').value = data.subject;
+                    document.querySelector('textarea[name="description"]').value = data.description;
+                    
+                    if (data.category_id) {
+                        document.querySelector('select[name="category_id"]').value = data.category_id;
+                    }
+                    
+                    if (data.priority) {
+                        document.querySelector('select[name="priority"]').value = data.priority;
+                    }
+                    
+                    // Show success message
+                    const alert = document.createElement('div');
+                    alert.className = 'alert alert-success alert-dismissible fade show';
+                    alert.innerHTML = `
+                        <strong>Template loaded!</strong> You can now edit the fields as needed.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    this.closest('.alert').after(alert);
+                    
+                    // Auto-dismiss after 3 seconds
+                    setTimeout(() => alert.remove(), 3000);
+                })
+                .catch(error => {
+                    console.error('Error loading template:', error);
+                    alert('Error loading template. Please try again.');
+                })
+                .finally(() => {
+                    // Restore selector state
+                    this.disabled = false;
+                    this.options[this.selectedIndex].text = originalText;
+                    this.value = '';
+                });
+        });
+    }
+});
+</script>
+@endpush
 </x-default-layout>

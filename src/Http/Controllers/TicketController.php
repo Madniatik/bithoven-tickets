@@ -4,6 +4,7 @@ namespace Bithoven\Tickets\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Bithoven\Tickets\DataTables\TicketsDataTable;
 use Bithoven\Tickets\Http\Requests\StoreTicketRequest;
 use Bithoven\Tickets\Http\Requests\UpdateTicketRequest;
 use Bithoven\Tickets\Models\Ticket;
@@ -36,132 +37,26 @@ class TicketController extends Controller
     /**
      * Display listing of tickets
      */
-    public function index(Request $request)
+    public function index(TicketsDataTable $dataTable)
     {
         $this->authorize('viewAny', Ticket::class);
-
-        // Load filters from session if no query params present
-        if (!$request->hasAny(['status', 'priority', 'category_id', 'assigned_to', 'search', 'date_from', 'date_to', 'sort', 'direction', 'clear_filters'])) {
-            $filters = session('tickets.filters', []);
-            if (!empty($filters)) {
-                $request->merge($filters);
-            }
-        } else {
-            // Clear filters if requested
-            if ($request->has('clear_filters')) {
-                session()->forget('tickets.filters');
-                return redirect()->route('tickets.index');
-            }
-            
-            // Save current filters to session
-            session(['tickets.filters' => $request->except(['page', 'export', 'clear_filters'])]);
-        }
-
-        $query = Ticket::with(['user', 'assignedUser', 'category']);
-
-        // Check if user is admin/agent (can edit tickets or manage categories)
-        $isAdmin = auth()->user()->can('edit-tickets') || auth()->user()->can('manage-ticket-categories');
-        
-        // If not admin, only show user's own tickets (created or assigned)
-        if (!$isAdmin) {
-            $query->where(function ($q) {
-                $q->where('user_id', auth()->id())
-                    ->orWhere('assigned_to', auth()->id());
-            });
-        }
-
-        // Filter by status
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        // Filter by priority
-        if ($request->filled('priority')) {
-            $query->where('priority', $request->priority);
-        }
-
-        // Filter by category
-        if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
-        }
-
-        // Filter by assigned user (only for admins)
-        if ($isAdmin && $request->filled('assigned_to')) {
-            if ($request->assigned_to === 'unassigned') {
-                $query->whereNull('assigned_to');
-            } else {
-                $query->where('assigned_to', $request->assigned_to);
-            }
-        }
-
-        // Search
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('ticket_number', 'like', "%{$search}%")
-                    ->orWhere('subject', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        // My tickets filter (only for admins)
-        if ($isAdmin && $request->filled('mine')) {
-            $query->where(function ($q) {
-                $q->where('user_id', auth()->id())
-                    ->orWhere('assigned_to', auth()->id());
-            });
-        }
-
-        // NEW: Date range filters
-        if ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->date_from);
-        }
-        if ($request->filled('date_to')) {
-            $query->whereDate('created_at', '<=', $request->date_to);
-        }
-
-        // NEW: Dynamic sorting
-        $sortBy = $request->get('sort', 'created_at');
-        $direction = $request->get('direction', 'desc');
-        
-        $allowedSorts = ['created_at', 'updated_at', 'priority', 'status', 'ticket_number'];
-        if (in_array($sortBy, $allowedSorts)) {
-            $query->orderBy($sortBy, $direction);
-        } else {
-            $query->latest();
-        }
-
-        // NEW: CSV Export
-        if ($request->get('export') === 'csv') {
-            return $this->exportCsv($query->get());
-        }
-
-        $tickets = $query->paginate($request->get('per_page', config('tickets.pagination.per_page', 15)))
-                         ->withQueryString();
 
         // Get filter options
         $categories = TicketCategory::active()->ordered()->get();
         $agents = User::permission('edit-tickets')->get();
 
-        // NEW: Count active filters
-        $activeFiltersCount = collect($request->only([
-            'status', 'priority', 'category_id', 'assigned_to', 'search', 'date_from', 'date_to', 'mine'
-        ]))->filter()->count();
-
-        // Get statistics filtered by user type
+        // Get statistics
+        $isAdmin = auth()->user()->can('edit-tickets') || auth()->user()->can('manage-ticket-categories');
         $statisticsFilters = [];
         if (!$isAdmin) {
-            // For normal users, only show their tickets in statistics
             $statisticsFilters['user_id'] = auth()->id();
         }
         $statistics = $this->ticketService->getStatistics($statisticsFilters);
 
-        return view('tickets::tickets.index', compact(
-            'tickets',
+        return $dataTable->render('tickets::tickets.index', compact(
             'categories',
             'agents',
-            'statistics',
-            'activeFiltersCount'
+            'statistics'
         ));
     }
 
@@ -475,6 +370,35 @@ class TicketController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Category updated successfully');
+    }
+
+    /**
+     * Update ticket priority
+     */
+    public function updatePriority(Request $request, Ticket $ticket)
+    {
+        abort_unless(auth()->user()->can('manage-ticket-categories'), 403, 'Only ticket administrators can change priority');
+
+        $request->validate([
+            'priority' => 'required|in:low,medium,high,urgent',
+        ]);
+
+        $oldPriority = $ticket->priority;
+        
+        $ticket->update([
+            'priority' => $request->priority,
+        ]);
+
+        // Fire PriorityEscalated event if priority increased
+        $priorities = ['low', 'medium', 'high', 'urgent'];
+        $oldIndex = array_search($oldPriority, $priorities);
+        $newIndex = array_search($ticket->priority, $priorities);
+        
+        if ($newIndex > $oldIndex) {
+            event(new PriorityEscalated($ticket, $oldPriority, $ticket->priority, auth()->user()));
+        }
+
+        return redirect()->back()->with('success', 'Priority updated successfully');
     }
 
     /**

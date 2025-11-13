@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\App;
 
 class TicketCreated extends Mailable
 {
@@ -19,7 +20,10 @@ class TicketCreated extends Mailable
     public function __construct(
         public Ticket $ticket
     ) {
-        //
+        // Set locale based on user preference
+        $locale = $ticket->user->locale ?? config('app.locale', 'en');
+        App::setLocale($locale);
+        $this->locale($locale);
     }
 
     /**
@@ -28,7 +32,7 @@ class TicketCreated extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "New Ticket Created: #{$this->ticket->ticket_number}",
+            subject: __('tickets::emails.ticket_created.subject', ['number' => $this->ticket->ticket_number]),
         );
     }
 

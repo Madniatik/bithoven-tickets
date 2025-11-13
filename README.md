@@ -284,7 +284,7 @@ composer test
 **1. Clone repository:**
 
 ```bash
-cd ~/CODE/LARAVEL/METRONIC/BITHOVEN.5.0/
+cd ~/CODE/LARAVEL/BITHOVEN/
 git clone https://github.com/your-username/bithoven-tickets.git
 ```
 

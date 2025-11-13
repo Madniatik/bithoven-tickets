@@ -21,9 +21,12 @@ class PriorityEscalated extends Mailable
         public Ticket $ticket,
         public string $oldPriority,
         public string $newPriority,
-        public ?User $changedBy = null
+        public ?string $reason = null
     ) {
-        //
+        // Set locale based on user preference
+        $locale = $ticket->user->locale ?? config('app.locale', 'en');
+        App::setLocale($locale);
+        $this->locale($locale);
     }
 
     /**
@@ -32,7 +35,7 @@ class PriorityEscalated extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "Ticket Priority Escalated: #{$this->ticket->ticket_number}",
+            subject: __('tickets::emails.priority_escalated.subject', ['number' => $this->ticket->ticket_number]),
         );
     }
 

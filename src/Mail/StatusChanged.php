@@ -20,10 +20,12 @@ class StatusChanged extends Mailable
     public function __construct(
         public Ticket $ticket,
         public string $oldStatus,
-        public string $newStatus,
-        public ?User $changedBy = null
+        public string $newStatus
     ) {
-        //
+        // Set locale based on user preference
+        $locale = $ticket->user->locale ?? config('app.locale', 'en');
+        App::setLocale($locale);
+        $this->locale($locale);
     }
 
     /**
@@ -32,7 +34,7 @@ class StatusChanged extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "Ticket Status Changed: #{$this->ticket->ticket_number}",
+            subject: __('tickets::emails.status_changed.subject', ['number' => $this->ticket->ticket_number]),
         );
     }
 
