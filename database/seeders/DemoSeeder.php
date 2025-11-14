@@ -8,46 +8,33 @@ class DemoSeeder extends Seeder
 {
     /**
      * Run the database seeds for demo data.
-     * 
-     * This seeder orchestrates all demo data seeders for the tickets extension.
-     * 
-     * Note: Can only be run once. To re-run, manually delete existing demo data first.
+     *
+     * This seeder creates ONLY demo tickets with comments.
+     * Essential data (categories, templates, responses, rules) 
+     * are seeded during installation via DatabaseSeeder.
+     *
+     * Can be run multiple times safely - skips if demo tickets already exist.
      */
     public function run(): void
     {
-        $this->command->info('🌱 Starting Tickets Demo Seeders...');
-        
-        // Check if demo data already exists
+        $this->command->info('🌱 Starting Tickets Demo Data...');
+
+        // Check if demo tickets already exist
         $existingTickets = \Bithoven\Tickets\Models\Ticket::count();
-        $existingTemplates = \Bithoven\Tickets\Models\TicketTemplate::count();
-        $existingResponses = \Bithoven\Tickets\Models\CannedResponse::count();
-        
-        if ($existingTickets > 0 || $existingTemplates > 0 || $existingResponses > 0) {
-            $this->command->warn('⚠️  Demo data already exists!');
+
+        if ($existingTickets > 0) {
+            $this->command->warn('⚠️  Demo tickets already exist!');
             $this->command->info("   Tickets: {$existingTickets}");
-            $this->command->info("   Templates: {$existingTemplates}");
-            $this->command->info("   Canned Responses: {$existingResponses}");
             $this->command->newLine();
-            $this->command->info('💡 Only new categories and automation rules will be updated.');
-            $this->command->info('💡 To reload demo data, delete existing records first.');
-            
-            // Only run seeders that are idempotent
-            $this->call([
-                CategorySeeder::class,
-                AutomationRulesSeeder::class,
-            ]);
-            
+            $this->command->info('💡 To reload demo data, delete existing tickets first.');
             return;
         }
-        
-        // Run all seeders (first time)
+
+        // Run ONLY demo tickets seeder
         $this->call([
-            CategorySeeder::class,
-            TemplatesResponsesSeeder::class,
-            AutomationRulesSeeder::class,
             TicketsDemoSeeder::class,
         ]);
-        
-        $this->command->info('✅ All demo data loaded successfully!');
+
+        $this->command->info('✅ Demo tickets loaded successfully!');
     }
 }
