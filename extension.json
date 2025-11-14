@@ -1,0 +1,78 @@
+{
+  "name": "tickets",
+  "version": "1.1.0",
+  "description": "Complete support ticket system with categories, assignments, notifications, templates, automation, and DataTables",
+  "migrations": {
+    "required": true,
+    "count": 8,
+    "can_skip": false,
+    "details": [
+      "2025_01_01_000001_create_ticket_categories_table",
+      "2025_01_01_000002_create_tickets_table",
+      "2025_01_01_000003_create_ticket_comments_table",
+      "2025_01_01_000004_create_ticket_attachments_table",
+      "2025_01_01_000005_create_automation_logs_table",
+      "2025_01_01_000006_create_ticket_templates_table",
+      "2025_01_01_000007_create_canned_responses_table",
+      "2025_01_01_000008_create_ticket_automation_tables"
+    ],
+    "description": "Complete database schema for ticket system with categories, assignments, notifications, templates, automation rules, and canned responses"
+  },
+  "breaking_changes": false,
+  "min_version": "1.0.0",
+  "dependencies": {
+    "bithoven/core": "^1.4.0"
+  },
+  "changelog": {
+    "v1.1.0": {
+      "date": "2025-11-13",
+      "changes": [
+        "Migrated all listings to Yajra DataTables (100% compliance)",
+        "Added DataTables for: Tickets, Templates, Automation Rules, Canned Responses, Automation Logs",
+        "Server-side pagination, searching, and ordering",
+        "Export functionality (CSV, Excel, PDF) via DataTables",
+        "Responsive design for mobile devices",
+        "Improved performance with AJAX rendering",
+        "Consistent UI/UX across all tables"
+      ],
+      "migration_notes": "⚠️ Initial installation requires 8 migrations. A backup will be created automatically before installation.",
+      "breaking_changes": false,
+      "components": ["code", "database", "views", "config"]
+    },
+    "v1.0.0": {
+      "date": "2025-11-01",
+      "changes": [
+        "Initial release of Tickets extension",
+        "Ticket categories with icons and colors",
+        "Ticket assignments to users",
+        "Email notifications (5 types)",
+        "Ticket templates for quick creation",
+        "Automation rules with conditions and actions",
+        "Canned responses for common replies",
+        "SLA tracking with breach warnings",
+        "Complete CRUD operations",
+        "Role-based permissions"
+      ],
+      "migration_notes": "⚠️ Initial installation - creates complete database schema (8 tables).",
+      "breaking_changes": false,
+      "components": ["code", "database", "views", "config", "assets"]
+    }
+  },
+  "features": {
+    "datatables": true,
+    "notifications": true,
+    "automation": true,
+    "templates": true,
+    "sla_tracking": true,
+    "attachments": true,
+    "comments": true,
+    "categories": true,
+    "assignments": true,
+    "permissions": true
+  },
+  "settings": {
+    "configurable": true,
+    "settings_url": "/admin/extensions/tickets/settings",
+    "documentation": "docs/SETTINGS.md"
+  }
+}
