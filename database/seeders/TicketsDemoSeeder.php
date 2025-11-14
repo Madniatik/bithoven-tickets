@@ -176,7 +176,7 @@ class TicketsDemoSeeder extends Seeder
                 'description' => "The 'Save Changes' button on the profile settings page is not clickable on mobile devices.\n\nDevice: iPhone 13 Pro\niOS version: 17.1\nBrowser: Safari\nScreen size: 390 x 844\n\nSteps:\n1. Open settings on mobile\n2. Change profile picture\n3. Try to click 'Save Changes' button\n4. Nothing happens\n\nWorkaround: Desktop version works fine\n\nThis seems to be a CSS/touch event issue.",
                 'category_id' => $funcionalidad?->id,
                 'priority' => 'medium',
-                'status' => 'on_hold',
+                'status' => 'pending',
                 'user_id' => $users->random()->id,
                 'assigned_to' => $users->random()->id,
                 'created_at' => now()->subDays(4),
