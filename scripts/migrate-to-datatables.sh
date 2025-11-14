@@ -6,7 +6,7 @@
 
 set -e  # Exit on error
 
-EXTENSION_DIR="/Users/madniatik/CODE/LARAVEL/BITHOVEN/EXTENSIONS/bithoven-tickets"
+EXTENSION_DIR="/Users/madniatik/CODE/LARAVEL/BITHOVEN/EXTENSIONS/bithoven-extension-tickets"
 CPANEL_DIR="/Users/madniatik/CODE/LARAVEL/BITHOVEN/CPANEL"
 
 echo "🚀 Iniciando migración a DataTables..."

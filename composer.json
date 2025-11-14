@@ -2,7 +2,7 @@
     "name": "bithoven/tickets",
     "description": "Support ticket system for Bithoven framework",
     "type": "library",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "keywords": ["bithoven", "tickets", "support", "helpdesk", "customer-service"],
     "license": "MIT",
     "authors": [
@@ -42,8 +42,8 @@
         "bithoven": {
             "extension": true,
             "name": "Tickets",
-            "description": "Complete support ticket system with categories, assignments, and notifications",
-            "version": "1.0.0",
+            "description": "Complete support ticket system with categories, assignments, notifications, templates, automation, and DataTables",
+            "version": "1.1.0",
             "author": "Bithoven Team",
             "core_version": "^1.4.0",
             "modules": [
