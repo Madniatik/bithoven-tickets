@@ -1,7 +1,7 @@
 {
   "name": "Tickets System",
   "slug": "tickets",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Complete support ticket system with categories, assignments, notifications, templates, automation, and DataTables",
   "category": "Productivity",
   "icon": "ki-ticket",
@@ -29,6 +29,17 @@
     "bithoven/core": "^1.4.0"
   },
   "changelog": {
+    "v1.1.1": {
+      "date": "2025-11-14",
+      "changes": [
+        "Fixed TypeError in CommentAdded email notification",
+        "Corrected type hint from Comment to TicketComment in CommentAddedMail",
+        "Fixed listener to pass only comment object (ticket accessed via relation)"
+      ],
+      "migration_notes": "No migrations required. Patch release for email notification bugfix.",
+      "breaking_changes": false,
+      "components": ["code"]
+    },
     "v1.1.0": {
       "date": "2025-11-13",
       "changes": [
