@@ -51,12 +51,12 @@ class TicketsServiceProvider extends ServiceProvider
         // Publish config
         $this->publishes([
             __DIR__.'/../config/tickets.php' => config_path('tickets.php'),
-        ], 'bithoven-tickets-config');
+        ], 'bithoven-extension-tickets-config');
 
         // Publish migrations
         $this->publishes([
             __DIR__.'/../database/migrations' => database_path('migrations'),
-        ], 'bithoven-tickets-migrations');
+        ], 'bithoven-extension-tickets-migrations');
 
         // Load migrations (if running from vendor)
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
@@ -74,7 +74,7 @@ class TicketsServiceProvider extends ServiceProvider
         // Publish views to extensions folder (not vendor)
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/extensions/tickets'),
-        ], 'bithoven-tickets-views');
+        ], 'bithoven-extension-tickets-views');
 
         // Load translations
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'tickets');
@@ -82,7 +82,7 @@ class TicketsServiceProvider extends ServiceProvider
         // Publish translations
         $this->publishes([
             __DIR__.'/../resources/lang' => resource_path('lang/vendor/tickets'),
-        ], 'bithoven-tickets-lang');
+        ], 'bithoven-extension-tickets-lang');
 
         // Register commands
         if ($this->app->runningInConsole()) {

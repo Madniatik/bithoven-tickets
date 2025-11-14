@@ -29,7 +29,7 @@ echo ""
 # Step 3: Publish extension to vendor
 echo "📤 Paso 3: Publicando extensión al vendor..."
 cd "${CPANEL_DIR}"
-php artisan vendor:publish --tag=bithoven-tickets-views --force
+php artisan vendor:publish --tag=bithoven-extension-tickets-views --force
 echo "   ✅ Vistas publicadas"
 echo ""
 
