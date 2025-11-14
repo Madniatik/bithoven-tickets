@@ -311,7 +311,7 @@ class TicketsDemoSeeder extends Seeder
             $comments[] = [
                 'ticket_id' => $ticket->id,
                 'user_id' => $isStaff ? $users->random()->id : $ticket->user_id,
-                'body' => $body,
+                'comment' => $body,
                 'is_internal' => $isStaff && rand(0, 100) > 80, // 20% internal notes
                 'created_at' => now()->subHours($hoursAgo),
                 'updated_at' => now()->subHours($hoursAgo),
