@@ -10,11 +10,66 @@
   "migrations": {
     "required": true,
     "count": 8,
-    "can_skip": false
+    "can_skip": false,
+    "details": [
+      "2025_01_01_000001_create_ticket_categories_table",
+      "2025_01_01_000002_create_tickets_table",
+      "2025_01_01_000003_create_ticket_comments_table",
+      "2025_01_01_000004_create_ticket_attachments_table",
+      "2025_01_01_000005_create_notification_preferences_table",
+      "2025_01_01_000006_create_ticket_templates_table",
+      "2025_01_01_000007_create_canned_responses_table",
+      "2025_01_01_000008_create_ticket_automation_tables"
+    ],
+    "description": "Creates 8 tables: categories, tickets, comments, attachments, notification_preferences, templates, canned_responses, automation (rules + logs)"
   },
   "breaking_changes": false,
   "min_version": "1.0.0",
   "dependencies": {
     "bithoven/core": "^1.4.0"
+  },
+  "changelog": {
+    "v1.1.0": {
+      "date": "2025-11-13",
+      "changes": [
+        "Migrated all tables to Yajra DataTables v10.x (Tickets, Templates, Responses, Automation Rules, Logs)",
+        "Added Ticket Templates for pre-configured common issues",
+        "Added Canned Responses for quick agent replies",
+        "Added Automation Rules for automatic ticket routing",
+        "Added Automation Logs for execution tracking",
+        "Implemented complete async Email Notifications system (5 types)",
+        "Added Notification Preferences page at /settings/notifications",
+        "Enhanced UI with sidebar menu link for notification settings",
+        "Improved Active State Detection for showcase menu items"
+      ],
+      "migration_notes": "All 8 migrations are required. No data loss on update from v1.0.0. New tables: ticket_templates, canned_responses, automation_rules, automation_logs, notification_preferences.",
+      "breaking_changes": false,
+      "components": ["code", "database", "views", "config"]
+    },
+    "v1.0.0": {
+      "date": "2025-10-31",
+      "changes": [
+        "Initial release",
+        "Complete ticket management system with CRUD operations",
+        "Ticket categories with colors and icons",
+        "Comments system with internal notes",
+        "File attachments support",
+        "Ticket assignment to agents with auto-assignment",
+        "Status tracking (Open, In Progress, Pending, Resolved, Closed)",
+        "Priority levels (Low, Medium, High, Urgent)",
+        "Policy-based authorization with Spatie Permission",
+        "Event system (TicketCreated, TicketAssigned, TicketResolved)",
+        "Multi-channel notifications (database, mail, slack)",
+        "RESTful API endpoints",
+        "Metronic-styled Blade views",
+        "Statistics dashboard",
+        "SLA configuration support",
+        "CLI command to close stale tickets",
+        "Comprehensive documentation"
+      ],
+      "migration_notes": "Initial database setup. Creates 4 core tables: ticket_categories, tickets, ticket_comments, ticket_attachments. Includes seeder for default categories.",
+      "breaking_changes": false,
+      "components": ["code", "database", "views", "config"]
+    }
   }
 }
