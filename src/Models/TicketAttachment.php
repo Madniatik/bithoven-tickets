@@ -11,6 +11,7 @@ class TicketAttachment extends Model
 {
     protected $fillable = [
         'ticket_id',
+        'comment_id',
         'user_id',
         'filename',
         'original_filename',
@@ -42,6 +43,14 @@ class TicketAttachment extends Model
     public function ticket(): BelongsTo
     {
         return $this->belongsTo(Ticket::class);
+    }
+
+    /**
+     * Comment this attachment belongs to (if attached to a comment)
+     */
+    public function comment(): BelongsTo
+    {
+        return $this->belongsTo(TicketComment::class, 'comment_id');
     }
 
     /**

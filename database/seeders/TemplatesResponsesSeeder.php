@@ -150,7 +150,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         CannedResponse::updateOrCreate(
             ['shortcut' => '/hello-formal'],
@@ -162,7 +162,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         // === Investigation & Progress ===
 
@@ -176,7 +176,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         CannedResponse::updateOrCreate(
             ['shortcut' => '/need-info'],
@@ -188,7 +188,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         CannedResponse::updateOrCreate(
             ['shortcut' => '/escalated'],
@@ -200,7 +200,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         // === Solutions & Closings ===
 
@@ -214,7 +214,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         CannedResponse::updateOrCreate(
             ['shortcut' => '/solution-applied'],
@@ -226,7 +226,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         // === Password Reset ===
 
@@ -240,7 +240,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         // === Technical Responses ===
 
@@ -254,7 +254,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         CannedResponse::updateOrCreate(
             ['shortcut' => '/browser-support'],
@@ -266,7 +266,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         // === Billing ===
 
@@ -280,7 +280,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         // === Closings & Thanks ===
 
@@ -294,7 +294,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         CannedResponse::updateOrCreate(
             ['shortcut' => '/close-inactive'],
@@ -306,7 +306,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         // === Internal Notes (is_public = false) ===
 
@@ -320,7 +320,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => false,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         CannedResponse::updateOrCreate(
             ['shortcut' => '/internal-recurring'],
@@ -332,7 +332,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => false,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         CannedResponse::updateOrCreate(
             ['shortcut' => '/internal-dev'],
@@ -344,7 +344,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => false,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         // === Quick Fixes ===
 
@@ -358,7 +358,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         CannedResponse::updateOrCreate(
             ['shortcut' => '/incognito'],
@@ -370,7 +370,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         CannedResponse::updateOrCreate(
             ['shortcut' => '/need-screenshot'],
@@ -382,7 +382,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         CannedResponse::updateOrCreate(
             ['shortcut' => '/refund-process'],
@@ -394,7 +394,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         CannedResponse::updateOrCreate(
             ['shortcut' => '/change-email'],
@@ -406,7 +406,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         CannedResponse::updateOrCreate(
             ['shortcut' => '/api-docs'],
@@ -418,7 +418,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         CannedResponse::updateOrCreate(
             ['shortcut' => '/roadmap'],
@@ -430,7 +430,7 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => true,
             'usage_count' => 0,
         ]
-        ]);
+        );
 
         CannedResponse::updateOrCreate(
             ['shortcut' => '/internal-bug'],
@@ -442,6 +442,6 @@ class TemplatesResponsesSeeder extends Seeder
             'is_public' => false,
             'usage_count' => 0,
         ]
-        ]);
+        );
     }
 }

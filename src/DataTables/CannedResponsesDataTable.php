@@ -66,7 +66,7 @@ class CannedResponsesDataTable extends DataTable
     {
         return $model->newQuery()
             ->with('category')
-            ->select('canned_responses.*');
+            ->select('ticket_canned_responses.*');
     }
 
     /**

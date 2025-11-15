@@ -13,16 +13,23 @@ use Bithoven\Tickets\Policies\TicketPolicy;
 // Events
 use Bithoven\Tickets\Events\TicketCreated;
 use Bithoven\Tickets\Events\TicketAssigned;
+use Bithoven\Tickets\Events\TicketResolved;
 use Bithoven\Tickets\Events\CommentAdded;
 use Bithoven\Tickets\Events\StatusChanged;
 use Bithoven\Tickets\Events\PriorityEscalated;
 
-// Listeners
+// Email Listeners
 use Bithoven\Tickets\Listeners\TicketCreatedListener;
 use Bithoven\Tickets\Listeners\TicketAssignedListener;
 use Bithoven\Tickets\Listeners\CommentAddedListener;
 use Bithoven\Tickets\Listeners\StatusChangedListener;
 use Bithoven\Tickets\Listeners\PriorityEscalatedListener;
+
+// Notification Listeners (UI notifications)
+use Bithoven\Tickets\Listeners\NotificationListeners\SendTicketCreatedNotifications;
+use Bithoven\Tickets\Listeners\NotificationListeners\SendTicketAssignedNotifications;
+use Bithoven\Tickets\Listeners\NotificationListeners\SendTicketCommentedNotifications;
+use Bithoven\Tickets\Listeners\NotificationListeners\SendTicketResolvedNotifications;
 
 class TicketsServiceProvider extends ServiceProvider
 {
@@ -107,11 +114,18 @@ class TicketsServiceProvider extends ServiceProvider
      */
     protected function registerEventListeners(): void
     {
+        // Email listeners
         Event::listen(TicketCreated::class, TicketCreatedListener::class);
         Event::listen(TicketAssigned::class, TicketAssignedListener::class);
         Event::listen(CommentAdded::class, CommentAddedListener::class);
         Event::listen(StatusChanged::class, StatusChangedListener::class);
         Event::listen(PriorityEscalated::class, PriorityEscalatedListener::class);
+        
+        // Notification listeners (UI notifications in database)
+        Event::listen(TicketCreated::class, SendTicketCreatedNotifications::class);
+        Event::listen(TicketAssigned::class, SendTicketAssignedNotifications::class);
+        Event::listen(CommentAdded::class, SendTicketCommentedNotifications::class);
+        Event::listen(TicketResolved::class, SendTicketResolvedNotifications::class);
     }
 
     /**
