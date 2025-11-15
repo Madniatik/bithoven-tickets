@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('canned_responses', function (Blueprint $table) {
+        Schema::create('ticket_canned_responses', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->string('shortcut')->unique(); // e.g., /greeting, /thanks
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('canned_responses');
+        Schema::dropIfExists('ticket_canned_responses');
     }
 };

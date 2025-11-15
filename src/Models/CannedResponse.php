@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CannedResponse extends Model
 {
+    protected $table = 'ticket_canned_responses';
+    
     protected $fillable = [
         'title',
         'shortcut',
