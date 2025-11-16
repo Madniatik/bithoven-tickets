@@ -14,8 +14,9 @@ class AutomationRulesSeeder extends Seeder
     {
         // 1. Auto-Close Resolved Tickets After 7 Days
         TicketAutomationRule::updateOrCreate(
-            ['name' => 'Auto-Close Resolved Tickets (7 days)'],
+            ['id' => 1],
             [
+                'name' => 'Auto-Close Resolved Tickets (7 days)',
                 'type' => TicketAutomationRule::TYPE_AUTO_CLOSE,
                 'is_active' => true,
                 'description' => 'Automatically close tickets that have been resolved for 7 days without customer response',
@@ -37,8 +38,9 @@ class AutomationRulesSeeder extends Seeder
 
         // 2. Auto-Escalate Urgent Tickets After 2 Hours
         TicketAutomationRule::updateOrCreate(
-            ['name' => 'Escalate Urgent Tickets (2 hours)'],
+            ['id' => 2],
             [
+            'name' => 'Escalate Urgent Tickets (2 hours)',
             'type' => TicketAutomationRule::TYPE_AUTO_ESCALATE,
             'is_active' => true,
             'description' => 'Escalate priority of urgent unassigned tickets after 2 hours',
@@ -60,8 +62,9 @@ class AutomationRulesSeeder extends Seeder
 
         // 3. Auto-Escalate Medium to High After 24 Hours
         TicketAutomationRule::updateOrCreate(
-            ['name' => 'Escalate Medium Tickets (24 hours)'],
+            ['id' => 3],
             [
+            'name' => 'Escalate Medium Tickets (24 hours)',
             'type' => TicketAutomationRule::TYPE_AUTO_ESCALATE,
             'is_active' => true,
             'description' => 'Escalate medium priority tickets to high after 24 hours without resolution',
@@ -83,8 +86,9 @@ class AutomationRulesSeeder extends Seeder
 
         // 4. Auto-Assign by Round Robin (Example - would need custom logic)
         TicketAutomationRule::updateOrCreate(
-            ['name' => 'Auto-Assign New Tickets'],
+            ['id' => 4],
             [
+            'name' => 'Auto-Assign New Tickets',
             'type' => TicketAutomationRule::TYPE_AUTO_ASSIGN,
             'is_active' => false, // Disabled by default, needs configuration
             'description' => 'Automatically assign unassigned tickets to available agents using round-robin',
@@ -106,8 +110,9 @@ class AutomationRulesSeeder extends Seeder
 
         // 5. Auto-Response Out of Hours
         TicketAutomationRule::updateOrCreate(
-            ['name' => 'Auto-Response Outside Business Hours'],
+            ['id' => 5],
             [
+            'name' => 'Auto-Response Outside Business Hours',
             'type' => TicketAutomationRule::TYPE_AUTO_RESPONSE,
             'is_active' => false, // Disabled, requires time-based logic
             'description' => 'Send automatic response to tickets created outside business hours',
@@ -133,8 +138,9 @@ class AutomationRulesSeeder extends Seeder
 
         // 6. Close Spam/Invalid Tickets
         TicketAutomationRule::updateOrCreate(
-            ['name' => 'Close Pending Tickets (14 days)'],
+            ['id' => 6],
             [
+            'name' => 'Close Pending Tickets (14 days)',
             'type' => TicketAutomationRule::TYPE_AUTO_CLOSE,
             'is_active' => true,
             'description' => 'Close tickets in pending status for more than 14 days',

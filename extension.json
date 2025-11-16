@@ -18,10 +18,10 @@
       "2025_01_01_000004_create_ticket_attachments_table",
       "2025_01_01_000005_create_notification_preferences_table",
       "2025_01_01_000006_create_ticket_templates_table",
-      "2025_01_01_000007_create_canned_responses_table",
+      "2025_01_01_000007_create_ticket_canned_responses_table",
       "2025_01_01_000008_create_ticket_automation_tables"
     ],
-    "description": "Creates 8 tables: categories, tickets, comments, attachments, notification_preferences, templates, canned_responses, automation (rules + logs)"
+    "description": "Creates 8 tables: ticket_categories, tickets, ticket_comments, ticket_attachments, notification_preferences, ticket_templates, ticket_canned_responses, ticket_automation (rules + logs)"
   },
   "breaking_changes": false,
   "min_version": "1.0.0",
@@ -53,7 +53,7 @@
         "Enhanced UI with sidebar menu link for notification settings",
         "Improved Active State Detection for showcase menu items"
       ],
-      "migration_notes": "All 8 migrations are required. No data loss on update from v1.0.0. New tables: ticket_templates, canned_responses, automation_rules, automation_logs, notification_preferences.",
+      "migration_notes": "All 8 migrations are required. No data loss on update from v1.0.0. New tables: ticket_templates, ticket_canned_responses, ticket_automation_rules, ticket_automation_logs, notification_preferences.",
       "breaking_changes": false,
       "components": ["code", "database", "views", "config"]
     },

@@ -213,7 +213,7 @@ bithoven-extension-tickets/
 4. `ticket_attachments` - File attachments
 5. `notification_preferences` - User notification settings
 6. `ticket_templates` - Pre-configured templates
-7. `canned_responses` - Quick reply templates
+- `ticket_canned_responses` - Quick reply templates
 8. `ticket_automation_rules` - Automation rules
 9. `ticket_automation_logs` - Automation execution logs
 

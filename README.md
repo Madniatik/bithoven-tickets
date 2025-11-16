@@ -225,7 +225,7 @@ The extension creates the following tables:
 - `ticket_attachments` - File attachments
 - `notification_preferences` - User email notification settings
 - `ticket_templates` - Pre-configured ticket templates
-- `canned_responses` - Quick reply templates
+- `ticket_canned_responses` - Quick reply templates
 - `ticket_automation_rules` - Automation rules configuration
 - `ticket_automation_logs` - Automation execution logs
 

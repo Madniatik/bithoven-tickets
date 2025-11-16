@@ -4,6 +4,7 @@
     @section('breadcrumbs')
         {{ Breadcrumbs::render('tickets.show', $ticket) }}
     @endsection
+
     <div class="container-fluid">
         {{-- Header with Actions --}}
         <div class="row mb-5">
@@ -601,12 +602,15 @@
     @endcan
 
     @push('scripts')
+        {{-- SweetAlert2 para confirmaciones --}}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
         {{-- Fslightbox para galería de imágenes --}}
         <script src="https://cdn.jsdelivr.net/npm/fslightbox@3.4.1/index.min.js"></script>
 
         <script>
-            function changeStatus(status) {
-                // Mapeo de status a mensajes amigables
+            document.addEventListener('DOMContentLoaded', function() {
+                // Status labels mapping
                 const statusLabels = {
                     'open': 'Open',
                     'in_progress': 'In Progress',
@@ -615,29 +619,31 @@
                     'closed': 'Closed'
                 };
 
-                Swal.fire({
-                    title: 'Change Status?',
-                    text: `Change ticket status to "${statusLabels[status]}"?`,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, change it!',
-                    cancelButtonText: 'Cancel'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        fetch('{{ route('tickets.update', $ticket) }}', {
+                // Change ticket status
+                window.changeStatus = function(status) {
+                    Swal.fire({
+                        title: 'Change Status?',
+                        text: `Change ticket status to "${statusLabels[status]}"?`,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, change it!',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch(`{{ route('tickets.update', $ticket) }}`, {
                                 method: 'PUT',
                                 headers: {
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'X-CSRF-TOKEN': `{{ csrf_token() }}`,
                                     'Accept': 'application/json',
                                     'Content-Type': 'application/json'
                                 },
                                 body: JSON.stringify({
                                     status: status,
-                                    subject: '{{ $ticket->subject }}',
-                                    description: '{{ $ticket->description }}',
-                                    priority: '{{ $ticket->priority }}'
+                                    subject: {{ Js::from($ticket->subject) }},
+                                    description: {{ Js::from($ticket->description) }},
+                                    priority: {{ Js::from($ticket->priority) }}
                                 })
                             })
                             .then(response => response.json())
@@ -661,113 +667,142 @@
                                     text: 'Failed to update ticket status'
                                 });
                             });
-                    }
-                });
-            }
+                        }
+                    });
+                };
 
-            function closeTicket() {
-                if (confirm('Are you sure you want to close this ticket?')) {
-                    fetch('{{ route('tickets.close', $ticket) }}', {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Accept': 'application/json'
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                window.location.reload();
-                            }
-                        });
-                }
-            }
+                // Close ticket
+                window.closeTicket = function() {
+                    Swal.fire({
+                        title: 'Close Ticket?',
+                        text: 'Are you sure you want to close this ticket?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, close it!',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch(`{{ route('tickets.close', $ticket) }}`, {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': `{{ csrf_token() }}`,
+                                    'Accept': 'application/json'
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    window.location.reload();
+                                }
+                            });
+                        }
+                    });
+                };
 
-            function reopenTicket() {
-                if (confirm('Are you sure you want to reopen this ticket?')) {
-                    fetch('{{ route('tickets.reopen', $ticket) }}', {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Accept': 'application/json'
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                window.location.reload();
-                            }
-                        });
-                }
-            }
+                // Reopen ticket
+                // Reopen ticket
+                window.reopenTicket = function() {
+                    Swal.fire({
+                        title: 'Reopen Ticket?',
+                        text: 'Are you sure you want to reopen this ticket?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, reopen it!',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch(`{{ route('tickets.reopen', $ticket) }}`, {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': `{{ csrf_token() }}`,
+                                    'Accept': 'application/json'
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    window.location.reload();
+                                }
+                            });
+                        }
+                    });
+                };
 
-            function confirmDelete() {
-                Swal.fire({
-                    title: 'Delete Ticket?',
-                    text: "This action cannot be undone. All ticket data, comments, and attachments will be permanently deleted.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!',
-                    cancelButtonText: 'Cancel'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const form = document.createElement('form');
-                        form.method = 'POST';
-                        form.action = '{{ route('tickets.destroy', $ticket) }}';
+                // Delete ticket
+                // Delete ticket
+                window.confirmDelete = function() {
+                    Swal.fire({
+                        title: 'Delete Ticket?',
+                        text: "This action cannot be undone. All ticket data, comments, and attachments will be permanently deleted.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const form = document.createElement('form');
+                            form.method = 'POST';
+                            form.action = `{{ route('tickets.destroy', $ticket) }}`;
 
-                        const csrfToken = document.createElement('input');
-                        csrfToken.type = 'hidden';
-                        csrfToken.name = '_token';
-                        csrfToken.value = '{{ csrf_token() }}';
+                            const csrfToken = document.createElement('input');
+                            csrfToken.type = 'hidden';
+                            csrfToken.name = '_token';
+                            csrfToken.value = `{{ csrf_token() }}`;
 
-                        const methodField = document.createElement('input');
-                        methodField.type = 'hidden';
-                        methodField.name = '_method';
-                        methodField.value = 'DELETE';
+                            const methodField = document.createElement('input');
+                            methodField.type = 'hidden';
+                            methodField.name = '_method';
+                            methodField.value = 'DELETE';
 
-                        form.appendChild(csrfToken);
-                        form.appendChild(methodField);
-                        document.body.appendChild(form);
-                        form.submit();
-                    }
-                });
-            }
+                            form.appendChild(csrfToken);
+                            form.appendChild(methodField);
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+                    });
+                };
 
-            function deleteComment(commentId) {
-                Swal.fire({
-                    title: 'Delete Comment?',
-                    text: "This action cannot be undone. The comment and all its attachments will be permanently deleted.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!',
-                    cancelButtonText: 'Cancel'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const form = document.createElement('form');
-                        form.method = 'POST';
-                        form.action = `/tickets/{{ $ticket->id }}/comments/${commentId}`;
+                // Delete comment
+                window.deleteComment = function(commentId) {
+                    Swal.fire({
+                        title: 'Delete Comment?',
+                        text: "This action cannot be undone. The comment and all its attachments will be permanently deleted.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const form = document.createElement('form');
+                            form.method = 'POST';
+                            form.action = `/tickets/{{ $ticket->id }}/comments/${commentId}`;
 
-                        const csrfToken = document.createElement('input');
-                        csrfToken.type = 'hidden';
-                        csrfToken.name = '_token';
-                        csrfToken.value = '{{ csrf_token() }}';
+                            const csrfToken = document.createElement('input');
+                            csrfToken.type = 'hidden';
+                            csrfToken.name = '_token';
+                            csrfToken.value = `{{ csrf_token() }}`;
 
-                        const methodField = document.createElement('input');
-                        methodField.type = 'hidden';
-                        methodField.name = '_method';
-                        methodField.value = 'DELETE';
+                            const methodField = document.createElement('input');
+                            methodField.type = 'hidden';
+                            methodField.name = '_method';
+                            methodField.value = 'DELETE';
 
-                        form.appendChild(csrfToken);
-                        form.appendChild(methodField);
-                        document.body.appendChild(form);
-                        form.submit();
-                    }
-                });
-            }
+                            form.appendChild(csrfToken);
+                            form.appendChild(methodField);
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+                    });
+                };
+            }); // Fin DOMContentLoaded
             
             // ========= CANNED RESPONSES AUTOCOMPLETE =========
             @can('edit-tickets')

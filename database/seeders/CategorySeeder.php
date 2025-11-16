@@ -14,6 +14,7 @@ class CategorySeeder extends Seeder
     {
         $categories = [
             [
+                'id' => 1,
                 'name' => 'Técnico',
                 'slug' => 'tecnico',
                 'description' => 'Problemas técnicos, bugs, errores del sistema, acceso, rendimiento',
@@ -23,6 +24,7 @@ class CategorySeeder extends Seeder
                 'sort_order' => 1,
             ],
             [
+                'id' => 2,
                 'name' => 'Facturación',
                 'slug' => 'facturacion',
                 'description' => 'Consultas sobre pagos, facturas, suscripciones, reembolsos',
@@ -32,6 +34,7 @@ class CategorySeeder extends Seeder
                 'sort_order' => 2,
             ],
             [
+                'id' => 3,
                 'name' => 'General',
                 'slug' => 'general',
                 'description' => 'Consultas generales, preguntas, sugerencias, información',
@@ -41,6 +44,7 @@ class CategorySeeder extends Seeder
                 'sort_order' => 3,
             ],
             [
+                'id' => 4,
                 'name' => 'Cuenta',
                 'slug' => 'cuenta',
                 'description' => 'Gestión de cuenta, perfil, configuración, contraseñas, permisos',
@@ -50,6 +54,7 @@ class CategorySeeder extends Seeder
                 'sort_order' => 4,
             ],
             [
+                'id' => 5,
                 'name' => 'Funcionalidad',
                 'slug' => 'funcionalidad',
                 'description' => 'Solicitud de nuevas funcionalidades, mejoras, feedback',
@@ -59,6 +64,7 @@ class CategorySeeder extends Seeder
                 'sort_order' => 5,
             ],
             [
+                'id' => 6,
                 'name' => 'Seguridad',
                 'slug' => 'seguridad',
                 'description' => 'Reportes de seguridad, vulnerabilidades, accesos no autorizados',
@@ -68,6 +74,7 @@ class CategorySeeder extends Seeder
                 'sort_order' => 6,
             ],
             [
+                'id' => 7,
                 'name' => 'Documentación',
                 'slug' => 'documentacion',
                 'description' => 'Dudas sobre documentación, tutoriales, guías de uso',
@@ -77,6 +84,7 @@ class CategorySeeder extends Seeder
                 'sort_order' => 7,
             ],
             [
+                'id' => 8,
                 'name' => 'Integración',
                 'slug' => 'integracion',
                 'description' => 'API, webhooks, integraciones con terceros, desarrollo',
@@ -89,7 +97,7 @@ class CategorySeeder extends Seeder
 
         foreach ($categories as $category) {
             TicketCategory::updateOrCreate(
-                ['slug' => $category['slug']],
+                ['id' => $category['id']],
                 $category
             );
         }

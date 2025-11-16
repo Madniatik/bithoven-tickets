@@ -8,6 +8,7 @@ use Bithoven\Tickets\Models\TicketCategory;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 class CannedResponseController extends Controller
 {
@@ -42,7 +43,13 @@ class CannedResponseController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'shortcut' => 'required|string|max:50|unique:canned_responses,shortcut|regex:/^\/[a-z0-9-]+$/',
+            'shortcut' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('ticket_canned_responses', 'shortcut'),
+                'regex:/^\/[a-z0-9-]+$/'
+            ],
             'content' => 'required|string',
             'category_id' => 'nullable|exists:ticket_categories,id',
         ]);
@@ -78,7 +85,13 @@ class CannedResponseController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'shortcut' => 'required|string|max:50|regex:/^\/[a-z0-9-]+$/|unique:canned_responses,shortcut,' . $response->id,
+            'shortcut' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('ticket_canned_responses', 'shortcut')->ignore($response->id),
+                'regex:/^\/[a-z0-9-]+$/'
+            ],
             'content' => 'required|string',
             'category_id' => 'nullable|exists:ticket_categories,id',
         ]);
