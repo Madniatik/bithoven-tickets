@@ -223,7 +223,7 @@ The extension creates the following tables:
 - `ticket_categories` - Ticket categories
 - `ticket_comments` - Comments on tickets
 - `ticket_attachments` - File attachments
-- `notification_preferences` - User email notification settings
+- `ticket_notification_preferences` - User email notification settings
 - `ticket_templates` - Pre-configured ticket templates
 - `ticket_canned_responses` - Quick reply templates
 - `ticket_automation_rules` - Automation rules configuration

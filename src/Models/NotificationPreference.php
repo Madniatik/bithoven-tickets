@@ -13,7 +13,7 @@ class NotificationPreference extends Model
      *
      * @var string
      */
-    protected $table = 'notification_preferences';
+    protected $table = 'ticket_notification_preferences';
 
     /**
      * The attributes that are mass assignable.

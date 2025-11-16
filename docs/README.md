@@ -211,7 +211,7 @@ bithoven-extension-tickets/
 2. `ticket_categories` - Categories
 3. `ticket_comments` - Comments
 4. `ticket_attachments` - File attachments
-5. `notification_preferences` - User notification settings
+5. `ticket_notification_preferences` - User notification settings
 6. `ticket_templates` - Pre-configured templates
 - `ticket_canned_responses` - Quick reply templates
 8. `ticket_automation_rules` - Automation rules
