@@ -1,7 +1,7 @@
 {
   "name": "Tickets System",
   "slug": "tickets",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "description": "Complete support ticket system with categories, assignments, notifications, templates, automation, and DataTables",
   "category": "Productivity",
   "icon": "ki-ticket",
