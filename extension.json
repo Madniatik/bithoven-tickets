@@ -1,7 +1,7 @@
 {
   "name": "Tickets System",
   "slug": "tickets",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Complete support ticket system with categories, assignments, notifications, templates, automation, and DataTables",
   "category": "Productivity",
   "icon": "ki-ticket",
@@ -30,18 +30,29 @@
   },
   "seeders": {
     "core": [
-      "TicketCategoriesSeeder",
-      "TicketPrioritiesSeeder",
-      "TicketStatusesSeeder"
+      "CategorySeeder"
     ],
     "demo": [
-      "TicketsTableSeeder"
+      "TicketsDemoSeeder"
     ]
   },
   "system_tables": [
     "notifications"
   ],
   "changelog": {
+    "v1.1.5": {
+      "date": "2025-11-16",
+      "changes": [
+        "Fixed seeders configuration in extension.json",
+        "Corrected core seeder to CategorySeeder (actual class name)",
+        "Corrected demo seeder to TicketsDemoSeeder (actual class name)",
+        "Removed non-existent TicketPrioritiesSeeder and TicketStatusesSeeder references",
+        "Note: priority and status are ENUM fields in tickets table, not separate tables"
+      ],
+      "migration_notes": "No migrations required. Configuration fix only.",
+      "breaking_changes": false,
+      "components": ["config"]
+    },
     "v1.1.1": {
       "date": "2025-11-14",
       "changes": [
